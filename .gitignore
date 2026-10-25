@@ -1,0 +1,44 @@
+# Unity 生成目录
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# IDE
+.vs/
+.idea/
+.vscode/
+
+# 自动生成的工程文件
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+.vsconfig
+
+# 第三方素材与参考项目（不入库）
+/Assets/Undead Survivor/
+/Assets/TmpFont/
+
+# 构建产物
+*.exe
+*.apk
+*.unitypackage
+*.zip
+
+# 系统文件
+.DS_Store
+Thumbs.db
