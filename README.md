@@ -3,7 +3,7 @@
 类吸血鬼幸存者的 2D 像素肉鸽 Demo。一个人，一个月，第一个完整项目。
 
 Unity 2022.3 · C# · Windows
-![gameplay](gameplay.gif)
+![gameplay](SurviorLike.gif)
 
 ## 玩法
 
