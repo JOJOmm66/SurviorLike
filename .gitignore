@@ -33,6 +33,8 @@
 /Assets/Undead Survivor/
 /Assets/TmpFont/
 /Assets/TmpScenes/
+/Assets/TmpFont.meta
+/Assets/TmpScenes.meta
 # 构建产物
 *.exe
 *.apk
