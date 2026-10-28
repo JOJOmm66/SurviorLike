@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public static PlayerController instance;
-
     public int moveSpeed = 10;
     private Animator anim;
     private SpriteRenderer spriteRenderer;
@@ -19,29 +18,79 @@ public class PlayerController : MonoBehaviour
 
     public GameObject gameOverCanvas;
     public Image imageLose;
-    public bool isDead;
-    //游戏结束语句
+    public PlayerState state;
+    //状态机
+    public enum PlayerState
+    {
+        IdleOrRun,
+        Hit,
+        Dead
+    }
+    public void EnterState(PlayerState next)
+    {
+        if (state == next) return;
+        ExitState(state);
+        state = next;
+        ChangeState(state);
+    }
+    public void ChangeState(PlayerState next)
+    {
+        switch (state)
+        {
+            case PlayerState.Hit:
+                PlayerAudio.playerAudio.playerTakeHitAduio();
+                EnterState(PlayerState.IdleOrRun);
+                break;
+            case PlayerState.Dead:
+                anim.SetTrigger("Die");
+                Invoke("DeadToGameOver", 1.5f);
+                PlayerAudio.playerAudio.playerLoseAudio();
+                break;
+        }
+    }
+    //目前退出状态不需要任何执行，但需保留
+    public void ExitState(PlayerState next)
+    {     
+    }
+    //玩家运动
+    public void move()
+    {
+        float horizontalValue = Input.GetAxis("Horizontal");
+        float verticalValue = Input.GetAxis("Vertical");
+        if (horizontalValue <0)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else
+        {
+            spriteRenderer.flipX = false;
+        }
+        Vector3 moveDirection = new Vector3(horizontalValue, verticalValue).normalized;
+        this.transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
+        anim.SetFloat("Speed", moveDirection.magnitude);
+    }
+    //玩家受伤
+    public void takeDamage(int damage)
+    {
+        currentHealth -= damage;
+        healthBarSlider.value = currentHealth / maxHealth;
+        if (currentHealth > 0)
+        {
+            EnterState(PlayerState.Hit);
+        }
+        else
+        {
+            EnterState(PlayerState.Dead);
+        }
+    }
+    //玩家死亡，结束游戏
     public void DeadToGameOver()
     {
         Time.timeScale = 0;
         gameOverCanvas.SetActive(true);
         imageLose.gameObject.SetActive(true);
-        PlayerAudio.playerAudio.playerLoseAudio();
     }
-    //玩家受伤
-    public void takeDamage(int damage)
-    {
-        if (isDead) return;
-        currentHealth -= damage;
-        PlayerAudio.playerAudio.playerTakeHitAduio();
-        healthBarSlider.value = currentHealth/maxHealth;
-        if (currentHealth <= 0)
-        {
-            isDead = true;
-            anim.SetTrigger("Die");
-            Invoke("DeadToGameOver", 1.5f);
-        }
-    }
+    //
     private void Awake()
     {
         instance = this;
@@ -54,19 +103,13 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-        float horizontalValue = Input.GetAxis("Horizontal");
-        float verticalValue=Input.GetAxis("Vertical");
-        if (horizontalValue < 0)
+        switch (state)
         {
-            spriteRenderer.flipX = true;
+            case PlayerState.IdleOrRun:
+                move();
+                break;
+            case PlayerState.Dead:
+                return;
         }
-        else if (horizontalValue > 0) 
-        {
-            spriteRenderer.flipX= false;
-        }
-        Vector3 moveDirection = new Vector3(horizontalValue,verticalValue).normalized;
-        this.transform.Translate(moveDirection*moveSpeed * Time.deltaTime);
-        anim.SetFloat("Speed", moveDirection.magnitude);
     }
-
 }

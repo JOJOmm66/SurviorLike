@@ -16,7 +16,7 @@ public class gameTimer : MonoBehaviour
         {
             leftTime -= Time.deltaTime;
             if(leftTime<0) leftTime = 0f;
-            timeSlider.value=leftTime/maxTime;
+            timeSlider.value=(maxTime-leftTime)/maxTime;
             timeText.text = FormatTime(leftTime);
         }
         else
